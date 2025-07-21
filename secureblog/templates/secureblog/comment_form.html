@@ -1,0 +1,75 @@
+<style>
+  body {
+    background: #f8f9fa;
+    font-family: Arial, sans-serif;
+    color: #222;
+    margin: 0;
+  }
+  .comment-form-container {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 2em;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  }
+  h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1.5em;
+  }
+  label {
+    font-weight: 500;
+    color: #222;
+    margin-bottom: 0.3em;
+    display: block;
+  }
+  textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 1em;
+    margin-bottom: 1em;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  button[type="submit"] {
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    padding: 0.7em 0;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+  }
+  button[type="submit"]:hover {
+    background: #1e7e34;
+  }
+  .cancel-link {
+    display: block;
+    text-align: center;
+    margin-top: 1.5em;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .cancel-link:hover {
+    text-decoration: underline;
+    color: #0056b3;
+  }
+</style>
+<div class="comment-form-container">
+  <h2>Add Comment</h2>
+  <form method="post">
+    {% csrf_token %}
+    <label for="body">Comment:</label>
+    <textarea name="body" id="body" rows="4" required></textarea>
+    <button type="submit">Post Comment</button>
+  </form>
+  <a href="{% url 'post_detail' post.pk %}" class="cancel-link">Cancel</a>
+</div>
