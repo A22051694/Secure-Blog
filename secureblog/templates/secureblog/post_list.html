@@ -133,7 +133,7 @@
       <p>No posts found.</p>
       {% endfor %} {% if user.is_authenticated %}
       <div class="auth-actions">
-        <a href="{% url 'post_create' %}">Create New Post</a>
+        <a href="{% url 'post_create' %}">Create New Post here</a>
         <a href="{% url 'dashboard' %}">Your Profile</a>
         <form method="post" action="{% url 'logout' %}">
           {% csrf_token %}
