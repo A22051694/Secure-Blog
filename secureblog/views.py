@@ -1,11 +1,13 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from accounts.mixins import RoleRequiredMixin
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, redirect
 from .models import Post, Comment
 from django.contrib import messages
 from django.views import View
 from django.shortcuts import render
+from django.http import HttpResponseForbidden
 
 #  List published posts
 class PostListView(ListView):
@@ -20,8 +22,10 @@ class PostDetailView(DetailView):
     template_name = 'secureblog/post_detail.html'
     context_object_name = 'object'  # Fix for template compatibility
 
-#  Create a post
-class PostCreateView(LoginRequiredMixin, CreateView):
+
+#  Create a post (only admin and author roles)
+class PostCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
+    required_roles = ['admin', 'author']
     model = Post
     fields = ['title', 'content', 'is_published']
     template_name = 'secureblog/post_form.html'
@@ -57,8 +61,16 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.get_object().author == self.request.user
 
 
+
+# Prevent banned users from commenting
 class AddCommentView(LoginRequiredMixin, View):
+    def _is_banned(self, user):
+        profile = getattr(user, 'profile', None)
+        return profile is not None and profile.role == 'banned'
+
     def post(self, request, pk):
+        if self._is_banned(request.user):
+            return HttpResponseForbidden("Banned users cannot comment.")
         post = get_object_or_404(Post, pk=pk, is_published=True)
         Comment.objects.create(
             author=request.user,
@@ -68,6 +80,8 @@ class AddCommentView(LoginRequiredMixin, View):
         return redirect('post_detail', pk=pk)
 
     def get(self, request, pk):
+        if self._is_banned(request.user):
+            return HttpResponseForbidden("Banned users cannot comment.")
         post = get_object_or_404(Post, pk=pk, is_published=True)
         return render(request, 'secureblog/comment_form.html', {'post': post})
 
