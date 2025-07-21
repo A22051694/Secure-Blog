@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post List</title>
+    <style>
+      body {
+        background: #f8f9fa;
+        font-family: Arial, sans-serif;
+        color: #222;
+        margin: 0;
+      }
+      .container {
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 2em;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+      }
+      h2 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 1.5em;
+      }
+      .post-item {
+        background: #f9f9f9;
+        border: 1px solid #e3e3e3;
+        border-radius: 5px;
+        padding: 1em 1.2em;
+        margin: 1em 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      }
+      .post-item h3 {
+        margin-bottom: 0.3em;
+      }
+      .post-item a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .post-item a:hover {
+        text-decoration: underline;
+        color: #0056b3;
+      }
+      .post-meta {
+        color: #888;
+        font-size: 0.95em;
+        margin-bottom: 0.5em;
+      }
+      .post-actions a {
+        background: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 0.4em 1em;
+        margin-right: 0.5em;
+        font-size: 1em;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.2s;
+      }
+      .post-actions a:last-child {
+        background: #dc3545;
+      }
+      .post-actions a:hover {
+        background: #0056b3;
+      }
+      .post-actions a:last-child:hover {
+        background: #a71d2a;
+      }
+      .auth-actions,
+      .guest-actions {
+        margin-top: 2em;
+        text-align: center;
+      }
+      .auth-actions a,
+      .guest-actions a {
+        background: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 0.5em 1.2em;
+        margin-right: 0.5em;
+        font-size: 1em;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.2s;
+      }
+      .auth-actions a:nth-child(2) {
+        background: #007bff;
+      }
+      .auth-actions form {
+        display: inline;
+      }
+      .auth-actions button {
+        background: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 0.5em 1.2em;
+        font-size: 1em;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .auth-actions button:hover {
+        background: #a71d2a;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>All Posts</h2>
+      {% for post in object_list %}
+      <div class="post-item">
+        <h3><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h3>
+        <p class="post-meta">
+          by {{ post.author }} on {{ post.created_at|date:"Y-m-d" }}
+        </p>
+        <p>{{ post.content|truncatewords:20 }}</p>
+        {% if user == post.author %}
+        <div class="post-actions">
+          <a href="{% url 'post_update' post.pk %}">Edit</a>
+          <a href="{% url 'post_delete' post.pk %}">Delete</a>
+        </div>
+        {% endif %}
+      </div>
+      {% empty %}
+      <p>No posts found.</p>
+      {% endfor %} {% if user.is_authenticated %}
+      <div class="auth-actions">
+        <a href="{% url 'post_create' %}">Create New Post</a>
+        <a href="{% url 'dashboard' %}">Your Profile</a>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit">Logout</button>
+        </form>
+      </div>
+      {% else %}
+      <div class="guest-actions">
+        <a href="{% url 'register' %}">Register</a>
+        <a href="{% url 'login' %}">Login</a>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>

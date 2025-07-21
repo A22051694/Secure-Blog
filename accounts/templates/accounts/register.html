@@ -1,0 +1,63 @@
+<style>
+  body {
+    background: #f8f9fa;
+    font-family: Arial, sans-serif;
+    color: #222;
+    margin: 0;
+  }
+  .register-container {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 2em;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  }
+  h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1.5em;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+  }
+  button[type="submit"] {
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    padding: 0.7em 0;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button[type="submit"]:hover {
+    background: #1e7e34;
+  }
+  .register-link {
+    text-align: center;
+    margin-top: 1.5em;
+    color: #444;
+  }
+  .register-link a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  .register-link a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+  }
+</style>
+<div class="register-container">
+  <h2>Register</h2>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Register</button>
+  </form>
+  <p class="register-link">
+    Already have an account? <a href="{% url 'login' %}">Login</a>
+  </p>
+</div>
